@@ -40,7 +40,7 @@
                     <i class="fa-solid fa-book"></i> ReDoc
                 </a>
                 <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> API Online v1.0
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> API Online v1.1
                 </span>
             </div>
         </div>
@@ -48,7 +48,7 @@
         <!-- Navigation Tabs -->
         <div class="max-w-7xl mx-auto px-4 border-t border-indigo-900/50 flex space-x-2 overflow-x-auto text-sm pt-2">
             <button onclick="switchTab('apparel')" id="tab-apparel" class="px-4 py-2 font-medium border-b-2 border-amber-400 text-white flex items-center gap-2">
-                <i class="fa-solid fa-shoe-prints"></i> Модуль 1: Экипировка и Обувь
+                <i class="fa-solid fa-shoe-prints"></i> Модуль 1: Экипировка (20 категорий)
             </button>
             <button onclick="switchTab('vision')" id="tab-vision" class="px-4 py-2 font-medium border-b-2 border-transparent text-indigo-200 hover:text-white flex items-center gap-2">
                 <i class="fa-solid fa-camera"></i> Модуль 2: Visual Search (AI)
@@ -60,7 +60,7 @@
                 <i class="fa-solid fa-calendar-days"></i> Модуль 4: События РФ & Гео
             </button>
             <button onclick="switchTab('parsers')" id="tab-parsers" class="px-4 py-2 font-medium border-b-2 border-transparent text-indigo-200 hover:text-white flex items-center gap-2">
-                <i class="fa-solid fa-robot"></i> Парсеры и Сбор данных
+                <i class="fa-solid fa-robot"></i> Инфраструктура парсинга (Proxy & Schedule)
             </button>
         </div>
     </header>
@@ -71,13 +71,44 @@
         <!-- TAB 1: APPAREL & FOOTWEAR -->
         <section id="section-apparel" class="space-y-6">
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-                <h2 class="text-lg font-bold text-slate-800 mb-3 flex items-center gap-2">
-                    <i class="fa-solid fa-filter text-indigo-600"></i> Фильтры каталога экипировки
-                </h2>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+                <div class="flex flex-wrap justify-between items-center mb-3">
+                    <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-filter text-indigo-600"></i> Каталог экипировки со строгой таксономией
+                    </h2>
+                    <span class="text-xs bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full font-semibold border border-indigo-200">
+                        20 целевых категорий • Нормализация брендов
+                    </span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4 text-sm">
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 mb-1">Поиск</label>
-                        <input id="apparel-search" type="text" placeholder="Модель, бренд или технология..." class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none">
+                        <input id="apparel-search" type="text" placeholder="Модель, SKU артикул..." class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Категория (п. 3 ТЗ)</label>
+                        <select id="apparel-category" class="w-full px-3 py-2 border rounded-lg bg-white outline-none">
+                            <option value="">Все 20 категорий</option>
+                            <option value="Обувь">Обувь</option>
+                            <option value="Носки">Носки</option>
+                            <option value="Гетры (Компрессия)">Гетры (Компрессия)</option>
+                            <option value="Нижнее белье / Спортивные бра">Нижнее белье / Спортивные бра</option>
+                            <option value="Шорты">Шорты</option>
+                            <option value="Тайтсы">Тайтсы</option>
+                            <option value="Брюки">Брюки</option>
+                            <option value="Майки">Майки</option>
+                            <option value="Футболки">Футболки</option>
+                            <option value="Лонгсливы">Лонгсливы</option>
+                            <option value="Термобелье">Термобелье</option>
+                            <option value="Кофты / Мидлееры">Кофты / Мидлееры</option>
+                            <option value="Жилеты">Жилеты</option>
+                            <option value="Ветровки">Ветровки</option>
+                            <option value="Куртки (Мембраны)">Куртки (Мембраны)</option>
+                            <option value="Перчатки">Перчатки</option>
+                            <option value="Баффы (Гейтеры)">Баффы (Гейтеры)</option>
+                            <option value="Кепки / Козырьки">Кепки / Козырьки</option>
+                            <option value="Повязки">Повязки</option>
+                            <option value="Шапки">Шапки</option>
+                        </select>
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 mb-1">Бренд</label>
@@ -88,21 +119,29 @@
                             <option value="Hoka">Hoka</option>
                             <option value="Salomon">Salomon</option>
                             <option value="Asics">Asics</option>
-                            <option value="Puma">Puma</option>
+                            <option value="Compressport">Compressport</option>
+                            <option value="CEP">CEP</option>
+                            <option value="X-Bionic">X-Bionic</option>
+                            <option value="2XU">2XU</option>
+                            <option value="Craft">Craft</option>
+                            <option value="Gore Wear">Gore Wear</option>
+                            <option value="The North Face">The North Face</option>
+                            <option value="Buff">Buff</option>
+                            <option value="Ciele">Ciele</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Назначение</label>
-                        <select id="apparel-purpose" class="w-full px-3 py-2 border rounded-lg bg-white outline-none">
-                            <option value="">Все назначения</option>
-                            <option value="бег">Бег / Шоссе</option>
-                            <option value="трейл">Трейлраннинг</option>
-                            <option value="кроссфит">Кроссфит / Зал</option>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Пол</label>
+                        <select id="apparel-gender" class="w-full px-3 py-2 border rounded-lg bg-white outline-none">
+                            <option value="">Все</option>
+                            <option value="Мужской">Мужской</option>
+                            <option value="Женский">Женский</option>
+                            <option value="Унисекс">Унисекс</option>
                         </select>
                     </div>
                     <div class="flex items-end">
                         <button onclick="loadApparel()" class="w-full px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition shadow flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-magnifying-glass"></i> Применить
+                            <i class="fa-solid fa-magnifying-glass"></i> Найти
                         </button>
                     </div>
                 </div>
@@ -257,28 +296,68 @@
             </div>
         </section>
 
-        <!-- TAB 5: PARSERS RUNNER -->
+        <!-- TAB 5: PARSERS RUNNER & INFRASTRUCTURE -->
         <section id="section-parsers" class="space-y-6 hidden">
+            <!-- Infrastructure Stats Bar (Proxy & Scheduler) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Proxy & Anti-fraud Card -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-shield-halved text-indigo-600"></i> Ротация IP (Proxy6 / HTTP)
+                        </h3>
+                        <span id="proxy-badge" class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700">
+                            Антифрод активен
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-500">Автоматическая смена User-Agent и IP адресов для обхода защиты маркетплейсов.</p>
+                    <div class="flex items-center gap-4 text-xs font-medium text-slate-600 border-t pt-2">
+                        <span>Прокси в пуле: <strong id="proxy-total" class="text-indigo-600">0</strong></span>
+                        <span>Рабочие: <strong id="proxy-healthy" class="text-emerald-600">0</strong></span>
+                    </div>
+                </div>
+
+                <!-- Automation Scheduler Card -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-clock text-amber-600"></i> Автоматизация по расписанию
+                        </h3>
+                        <span id="sched-badge" class="px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600">
+                            Готов к запуску
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-500">Фоновое регулярное обновление цен, размерных сеток и поступления коллекций.</p>
+                    <div class="flex items-center justify-between text-xs border-t pt-2">
+                        <span class="text-slate-500">Интервал: <strong>каждые 6 часов</strong></span>
+                        <button onclick="toggleScheduler()" id="btn-toggle-sched" class="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition">
+                            Включить планировщик
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Targeted Parsing Controls -->
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
                 <h2 class="text-lg font-bold text-slate-800 mb-2 flex items-center gap-2">
-                    <i class="fa-solid fa-network-wired text-indigo-600"></i> Управление мультидоменным парсингом
+                    <i class="fa-solid fa-network-wired text-indigo-600"></i> Запуск сбора данных с категоризацией
                 </h2>
                 <p class="text-sm text-slate-500 mb-6">
-                    Автоматический сбор данных с маркетплейсов, спортивных сетей (RunLab, Спортмастер, Lamoda, 5lb) и платформ регистрации стартов (RussiaRunning, Golden Ring, Ironstar, Лига Героев).
+                    Автоматическая нормализация брендов (ASICS, асикс -> Asics) и привязка к 20 целевым категориям.
                 </p>
 
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <button onclick="triggerParser('apparel')" class="p-4 rounded-xl border-2 border-slate-200 hover:border-indigo-500 hover:bg-indigo-50/30 transition text-left space-y-2">
                         <div class="text-indigo-600 font-bold flex items-center gap-2">
-                            <i class="fa-solid fa-shoe-prints"></i> Сбор экипировки
+                            <i class="fa-solid fa-shoe-prints"></i> Сбор экипировки (20 кат.)
                         </div>
-                        <p class="text-xs text-slate-500">Парсинг обуви, одежды, размерных сеток и цен</p>
+                        <p class="text-xs text-slate-500">Сбор всей экипировки с нормализацией брендов</p>
                     </button>
                     <button onclick="triggerParser('supplements')" class="p-4 rounded-xl border-2 border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/30 transition text-left space-y-2">
                         <div class="text-emerald-600 font-bold flex items-center gap-2">
                             <i class="fa-solid fa-pills"></i> Сбор БАДов
                         </div>
-                        <p class="text-xs text-slate-500">Парсинг спортивного питания, дозировок и состава</p>
+                        <p class="text-xs text-slate-500">Парсинг спортивного питания и дозировок</p>
                     </button>
                     <button onclick="triggerParser('events')" class="p-4 rounded-xl border-2 border-slate-200 hover:border-rose-500 hover:bg-rose-50/30 transition text-left space-y-2">
                         <div class="text-rose-600 font-bold flex items-center gap-2">
@@ -308,7 +387,7 @@
                         <thead>
                             <tr class="border-b text-xs text-slate-500 font-semibold uppercase">
                                 <th class="pb-3">Job ID</th>
-                                <th class="pb-3">Домен</th>
+                                <th class="pb-3">Домен / Категория</th>
                                 <th class="pb-3">Статус</th>
                                 <th class="pb-3">Просканировано</th>
                                 <th class="pb-3">Добавлено / Обновлено</th>
@@ -334,6 +413,7 @@
     <script>
         let currentTab = 'apparel';
         let selectedFile = null;
+        let schedulerActive = false;
 
         function switchTab(tab) {
             currentTab = tab;
@@ -354,19 +434,21 @@
             if (tab === 'apparel') loadApparel();
             if (tab === 'supplements') loadSupplements();
             if (tab === 'events') loadEvents();
-            if (tab === 'parsers') loadParserJobs();
+            if (tab === 'parsers') { loadParserJobs(); loadInfraStatus(); }
         }
 
         // LOAD APPAREL
         async function loadApparel() {
             const search = document.getElementById('apparel-search').value;
+            const category = document.getElementById('apparel-category').value;
             const brand = document.getElementById('apparel-brand').value;
-            const purpose = document.getElementById('apparel-purpose').value;
+            const gender = document.getElementById('apparel-gender').value;
 
             const params = new URLSearchParams();
             if (search) params.append('search', search);
+            if (category) params.append('category', category);
             if (brand) params.append('brand', brand);
-            if (purpose) params.append('purpose', purpose);
+            if (gender) params.append('gender', gender);
 
             const grid = document.getElementById('apparel-grid');
             grid.innerHTML = '<div class="col-span-3 text-center py-12 text-slate-400"><i class="fa-solid fa-spinner fa-spin text-2xl"></i> Загрузка...</div>';
@@ -383,18 +465,23 @@
                 grid.innerHTML = data.items.map(item => `
                     <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden card-hover transition duration-200 flex flex-col">
                         <div class="h-52 bg-slate-100 overflow-hidden relative">
-                            <img src="${item.image_url}" alt="${item.title}" class="w-full h-full object-cover">
+                            <img src="${(item.image_urls && item.image_urls[0]) || item.image_url}" alt="${item.product_name || item.title}" class="w-full h-full object-cover">
                             <span class="absolute top-3 left-3 bg-slate-900/80 backdrop-blur text-white text-xs px-2.5 py-1 rounded-full font-semibold uppercase tracking-wider">${item.brand}</span>
-                            <span class="absolute top-3 right-3 bg-emerald-600 text-white text-xs px-2.5 py-1 rounded-full font-bold">${item.price.toLocaleString()} ₽</span>
+                            <span class="absolute top-3 right-3 bg-emerald-600 text-white text-xs px-2.5 py-1 rounded-full font-bold">${item.price_current.toLocaleString()} ₽</span>
+                            ${item.sku_id ? `<span class="absolute bottom-2 left-3 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded backdrop-blur">SKU: ${item.sku_id}</span>` : ''}
                         </div>
                         <div class="p-5 flex-1 flex flex-col justify-between space-y-3">
                             <div>
-                                <h3 class="font-bold text-slate-800 text-base leading-snug">${item.title}</h3>
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="bg-indigo-50 text-indigo-700 text-[11px] font-bold px-2 py-0.5 rounded">${item.category}</span>
+                                    <span class="text-slate-400 text-xs">• ${item.gender}</span>
+                                </div>
+                                <h3 class="font-bold text-slate-800 text-base leading-snug">${item.product_name || item.title}</h3>
                                 <p class="text-xs text-slate-500 mt-1 line-clamp-2">${item.description || ''}</p>
                             </div>
                             <div>
                                 <div class="flex flex-wrap gap-1 mb-3">
-                                    ${(item.technologies || []).slice(0, 3).map(tech => `<span class="bg-indigo-50 text-indigo-700 text-[10px] font-semibold px-2 py-0.5 rounded-md">${tech}</span>`).join('')}
+                                    ${(item.sizes || []).map(sz => `<span class="bg-slate-100 text-slate-700 text-[10px] font-semibold px-2 py-0.5 rounded">${sz}</span>`).join('')}
                                 </div>
                                 <div class="flex items-center justify-between text-xs text-slate-400 border-t pt-3">
                                     <span>Источник: <strong class="text-slate-600">${item.source}</strong></span>
@@ -476,7 +563,6 @@
             if (discipline) params.append('discipline', discipline);
             if (city) params.append('city', city);
             
-            // If radius chosen, reference Moscow coordinates (55.7558, 37.6173)
             if (radius) {
                 params.append('lat', '55.7558');
                 params.append('lon', '37.6173');
@@ -530,7 +616,45 @@
             }
         }
 
-        // LOAD PARSER JOBS
+        // LOAD PARSER JOBS & INFRA
+        async function loadInfraStatus() {
+            try {
+                const pRes = await fetch('/api/v1/parsers/proxies');
+                const pData = await pRes.json();
+                document.getElementById('proxy-total').textContent = pData.total_proxies;
+                document.getElementById('proxy-healthy').textContent = pData.healthy_proxies;
+
+                const sRes = await fetch('/api/v1/parsers/scheduler');
+                const sData = await sRes.json();
+                schedulerActive = sData.is_running;
+                const badge = document.getElementById('sched-badge');
+                const btn = document.getElementById('btn-toggle-sched');
+                if (schedulerActive) {
+                    badge.textContent = 'Работает';
+                    badge.className = 'px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700';
+                    btn.textContent = 'Приостановить';
+                    btn.className = 'px-3 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-medium transition';
+                } else {
+                    badge.textContent = 'На паузе';
+                    badge.className = 'px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600';
+                    btn.textContent = 'Включить планировщик';
+                    btn.className = 'px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition';
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        async function toggleScheduler() {
+            try {
+                const res = await fetch(`/api/v1/parsers/scheduler/toggle?enable=${!schedulerActive}`, { method: 'POST' });
+                await res.json();
+                loadInfraStatus();
+            } catch (e) {
+                alert(`Ошибка: ${e}`);
+            }
+        }
+
         async function loadParserJobs() {
             const tbody = document.getElementById('jobs-table-body');
             tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-slate-400"><i class="fa-solid fa-spinner fa-spin"></i></td></tr>';
@@ -568,10 +692,10 @@
                 const res = await fetch('/api/v1/parsers/run', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ domain: domain, limit_per_source: 20 })
+                    body: JSON.stringify({ domain: domain, limit_per_source: 50 })
                 });
                 const job = await res.json();
-                alert(`Задача ${job.job_id} (${domain}) успешно запущена и завершена! Добавлено: ${job.items_added}, Обновлено: ${job.items_updated}`);
+                alert(`Задача ${job.job_id} (${job.domain}) завершена! Добавлено: ${job.items_added}, Обновлено: ${job.items_updated}`);
                 loadParserJobs();
             } catch (err) {
                 alert(`Ошибка запуска: ${err}`);
@@ -691,8 +815,11 @@
                             ${matched ? `
                                 <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
                                     <div class="flex justify-between items-center">
-                                        <span class="font-bold text-slate-900">${matched.title}</span>
-                                        <span class="text-lg font-bold text-emerald-600">${matched.price.toLocaleString()} ₽</span>
+                                        <div>
+                                            <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider">[${matched.category}] SKU: ${matched.sku_id || '—'}</span>
+                                            <div class="font-bold text-slate-900 text-base">${matched.product_name || matched.title}</div>
+                                        </div>
+                                        <span class="text-lg font-bold text-emerald-600">${matched.price_current.toLocaleString()} ₽</span>
                                     </div>
                                     <p class="text-xs text-slate-500">${matched.description || ''}</p>
                                     <div class="flex justify-between items-center pt-2 text-xs">

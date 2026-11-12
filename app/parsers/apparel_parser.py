@@ -9,21 +9,22 @@ logger = logging.getLogger(__name__)
 
 class ApparelCatalogParser(BaseParser):
     def __init__(self):
-        super().__init__(name="ApparelCatalogParser", source="MultiSport Retail Network")
+        super().__init__(name="ApparelCatalogParser", source="MultiSport Retail")
 
-    async def parse(self, limit: int = 50, target_category: Optional[str] = None) -> List[Dict[str, Any]]:
+    async def parse(self, limit: int = 20, target_category: Optional[str] = None) -> List[Dict[str, Any]]:
         """
         Parses sports apparel, footwear and accessories with strict categorization
         according to the 20 target categories and canonical brand taxonomy.
         """
         logger.info(f"[{self.name}] Starting parsing job (limit={limit}, category={target_category or 'all'})...")
 
-        # Curated catalog representing genuine marketplace feeds across all 20 categories
+        # Curated catalog strictly representing each of the 20 target categories (Section 3 of ТЗ)
         catalog_dataset = [
             # 1. Носки
             {
                 "sku_id": "CMP-PRS-001",
                 "product_name": "Compressport Pro Racing Socks V4.0 Run High",
+                "model_name": "Compressport Pro Racing Socks V4.0 Run High",
                 "brand": "compressport",
                 "category": "Носки",
                 "gender": "унисекс",
@@ -38,25 +39,12 @@ class ApparelCatalogParser(BaseParser):
                 "technologies": ["3D.Dots", "Acu-Pressure", "Hotspot Reducer"],
                 "description": "Анатомические беговые носки с 3D-точками для терморегуляции, защиты ахилла и предотвращения мозолей."
             },
-            {
-                "sku_id": "CEP-RUN-002",
-                "product_name": "CEP Short Support Socks Ultralight",
-                "brand": "cep",
-                "category": "Носки",
-                "gender": "Мужской",
-                "price_current": 2490.0,
-                "sizes": ["III (39-42)", "IV (42-45)", "V (45-48)"],
-                "image_urls": ["https://images.unsplash.com/photo-1586350977771-b3b0abd50c82?auto=format&fit=crop&w=1200&q=80"],
-                "source_url": "https://sportmaster.ru/product/cep-ultralight-socks",
-                "source": "Sportmaster PRO",
-                "technologies": ["Smart Grip", "Carbon Threads", "Medi Compression"],
-                "description": "Сверхлегкие укороченные компрессионные носки с карбоновой нитью для максимальной поддержки стопы."
-            },
 
             # 2. Обувь
             {
                 "sku_id": "NK-PEG-4001",
                 "product_name": "Nike Air Zoom Pegasus 40",
+                "model_name": "Nike Air Zoom Pegasus 40",
                 "brand": "nike",
                 "category": "Обувь",
                 "gender": "Унисекс",
@@ -72,78 +60,12 @@ class ApparelCatalogParser(BaseParser):
                 "specs": {"drop_mm": 10, "weight_g": 288},
                 "description": "Легендарный беговой бестселлер с отзывчивой амортизацией Nike React и двумя блоками Zoom Air."
             },
-            {
-                "sku_id": "HOK-CLF-9002",
-                "product_name": "Hoka One One Clifton 9",
-                "brand": "hoka one one",
-                "category": "Обувь",
-                "gender": "Мужской",
-                "price_current": 17490.0,
-                "sizes": ["41 EU", "42 EU", "43 EU", "44 EU", "45 EU"],
-                "image_urls": [
-                    "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?auto=format&fit=crop&w=1200&q=80"
-                ],
-                "source_url": "https://runlab.ru/catalog/obuv/hoka-clifton-9",
-                "source": "RunLab",
-                "technologies": ["CMEVA Foam", "Early stage Meta-Rocker", "Durabrasion Rubber"],
-                "specs": {"drop_mm": 5, "weight_g": 248},
-                "description": "Максимальный комфорт и мягкость для бега на любые дистанции."
-            },
-            {
-                "sku_id": "SAL-SP6-GTX03",
-                "product_name": "Salomon Speedcross 6 Gore-Tex",
-                "brand": "salomon",
-                "category": "Обувь",
-                "gender": "Мужской",
-                "price_current": 18990.0,
-                "sizes": ["41 EU", "42 EU", "43 EU", "44 EU", "45 EU"],
-                "image_urls": [
-                    "https://images.unsplash.com/photo-1551107696-a4b0c5a0d9a2?auto=format&fit=crop&w=1200&q=80"
-                ],
-                "source_url": "https://sportmaster.ru/product/salomon-speedcross-6-gtx",
-                "source": "Sportmaster PRO",
-                "technologies": ["Mud Contagrip", "Quicklace", "Sensifit", "Gore-Tex"],
-                "specs": {"drop_mm": 10, "weight_g": 328},
-                "description": "Икона трейлраннинга с агрессивным протектором и водонепроницаемой мембраной GTX."
-            },
-            {
-                "sku_id": "ASC-NMB-2604",
-                "product_name": "Asics Gel-Nimbus 26",
-                "brand": "asics running",
-                "category": "Обувь",
-                "gender": "Мужской",
-                "price_current": 19490.0,
-                "sizes": ["41 EU", "42 EU", "43 EU", "44 EU", "45 EU"],
-                "image_urls": [
-                    "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=1200&q=80"
-                ],
-                "source_url": "https://brandshop.ru/goods/asics-gel-nimbus-26",
-                "source": "Brandshop",
-                "technologies": ["PureGEL", "FF BLAST PLUS ECO", "ASICSGRIP"],
-                "specs": {"drop_mm": 8, "weight_g": 304},
-                "description": "Премиальные шоссейные кроссовки с максимальной амортизацией и мягкостью PureGEL."
-            },
-            {
-                "sku_id": "ADI-UB-LGT05",
-                "product_name": "Adidas Ultraboost Light",
-                "brand": "adidas",
-                "category": "Обувь",
-                "gender": "Унисекс",
-                "price_current": 16990.0,
-                "sizes": ["40 EU", "41 EU", "42 EU", "43 EU", "44 EU"],
-                "image_urls": [
-                    "https://images.unsplash.com/photo-1587563871167-1ee9c731aefb?auto=format&fit=crop&w=1200&q=80"
-                ],
-                "source_url": "https://lamoda.ru/p/adidas-ultraboost-light",
-                "source": "Lamoda Sport",
-                "technologies": ["Light BOOST", "Primeknit+", "Continental Rubber"],
-                "description": "Ультралегкие кроссовки со взрывным возвратом энергии Light BOOST."
-            },
 
             # 3. Гетры (Компрессия)
             {
                 "sku_id": "CEP-CALF-001",
                 "product_name": "CEP Calf Sleeves 4.0 Compression",
+                "model_name": "CEP Calf Sleeves 4.0 Compression",
                 "brand": "cep",
                 "category": "Гетры (Компрессия)",
                 "gender": "Унисекс",
@@ -155,25 +77,12 @@ class ApparelCatalogParser(BaseParser):
                 "technologies": ["Graduated Compression", "Medi Quality", "Air Channels"],
                 "description": "Градуированная компрессия для стабилизации икроножных мышц и предотвращения судорог."
             },
-            {
-                "sku_id": "2XU-CALF-002",
-                "product_name": "2XU Compression Calf Guards",
-                "brand": "2xu",
-                "category": "Гетры (Компрессия)",
-                "gender": "Унисекс",
-                "price_current": 4290.0,
-                "sizes": ["S", "M", "L", "XL"],
-                "image_urls": ["https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=1200&q=80"],
-                "source_url": "https://sportmaster.ru/product/2xu-calf-guards",
-                "source": "Sportmaster PRO",
-                "technologies": ["PWX Flex", "Invista Lycra"],
-                "description": "Сверхпрочный компрессионный материал PWX защищает мышцы голени от микротравм."
-            },
 
             # 4. Нижнее белье / Спортивные бра
             {
                 "sku_id": "SHK-RUN-001",
                 "product_name": "Shock Absorber Ultimate Run Bra",
+                "model_name": "Shock Absorber Ultimate Run Bra",
                 "brand": "shock absorber",
                 "category": "Нижнее белье / Спортивные бра",
                 "gender": "Женский",
@@ -185,25 +94,12 @@ class ApparelCatalogParser(BaseParser):
                 "technologies": ["Infinity 8 Support System", "Dry Action"],
                 "description": "Легендарный спортивный бра с уменьшением колебаний груди до 78% во время бега."
             },
-            {
-                "sku_id": "UA-BRA-002",
-                "product_name": "Under Armour Infinity High Sports Bra",
-                "brand": "under armour",
-                "category": "Нижнее белье / Спортивные бра",
-                "gender": "Женский",
-                "price_current": 4990.0,
-                "sizes": ["XS", "S", "M", "L"],
-                "image_urls": ["https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1200&q=80"],
-                "source_url": "https://lamoda.ru/p/under-armour-infinity-bra",
-                "source": "Lamoda Sport",
-                "technologies": ["HeatGear", "Injected Foam Pad"],
-                "description": "Инъекционная пена для анатомической поддержки высокой степени при беге и прыжках."
-            },
 
             # 5. Шорты
             {
                 "sku_id": "NK-STR-001",
                 "product_name": "Nike Stride Dri-FIT 5inch Running Shorts",
+                "model_name": "Nike Stride Dri-FIT 5inch Running Shorts",
                 "brand": "nike",
                 "category": "Шорты",
                 "gender": "Мужской",
@@ -215,25 +111,12 @@ class ApparelCatalogParser(BaseParser):
                 "technologies": ["Dri-FIT", "Breathe Fabric", "Phone Pocket"],
                 "description": "Легкие шорты для быстрого бега с влагонепроницаемым карманом для смартфона."
             },
-            {
-                "sku_id": "SAL-SNC-002",
-                "product_name": "Salomon Sense Aero 5 Shorts",
-                "brand": "salomon",
-                "category": "Шорты",
-                "gender": "Мужской",
-                "price_current": 6490.0,
-                "sizes": ["S", "M", "L", "XL"],
-                "image_urls": ["https://images.unsplash.com/photo-1591195853828-11db59a44f6b?auto=format&fit=crop&w=1200&q=80"],
-                "source_url": "https://sportmaster.ru/product/salomon-sense-aero",
-                "source": "Sportmaster PRO",
-                "technologies": ["Aerotech", "37.5 Technology", "4-Way Stretch"],
-                "description": "Минималистичные трейловые шорты премиум-класса с технологией 37.5 для поддержания микроклимата."
-            },
 
             # 6. Тайтсы
             {
                 "sku_id": "2XU-MCS-001",
                 "product_name": "2XU MCS Run Compression Tights",
+                "model_name": "2XU MCS Run Compression Tights",
                 "brand": "2xu",
                 "category": "Тайтсы",
                 "gender": "Мужской",
@@ -245,25 +128,12 @@ class ApparelCatalogParser(BaseParser):
                 "technologies": ["Muscle Containment Stamping (MCS)", "PWX Weight"],
                 "description": "Тайтсы с направленным штампованным бандажированием мышц бедра и квадрицепсов."
             },
-            {
-                "sku_id": "GOR-R5-002",
-                "product_name": "Gore Wear R5 Windstopper Tights",
-                "brand": "gore wear",
-                "category": "Тайтсы",
-                "gender": "Мужской",
-                "price_current": 10490.0,
-                "sizes": ["M", "L", "XL"],
-                "image_urls": ["https://images.unsplash.com/photo-1506629082955-511b1aa562c8?auto=format&fit=crop&w=1200&q=80"],
-                "source_url": "https://sportmaster.ru/product/gore-r5-tights",
-                "source": "Sportmaster PRO",
-                "technologies": ["GORE-TEX INFINIUM", "WINDSTOPPER"],
-                "description": "Ветрозащитные беговые тайтсы с мембраной Infinium спереди и эластичной спинкой."
-            },
 
             # 7. Брюки
             {
                 "sku_id": "TNF-FLX-001",
                 "product_name": "The North Face Flight Series Strive Pants",
+                "model_name": "The North Face Flight Series Strive Pants",
                 "brand": "the north face",
                 "category": "Брюки",
                 "gender": "Мужской",
@@ -280,6 +150,7 @@ class ApparelCatalogParser(BaseParser):
             {
                 "sku_id": "CIE-SNG-001",
                 "product_name": "Ciele Athletics Elite Singlet",
+                "model_name": "Ciele Athletics Elite Singlet",
                 "brand": "ciele",
                 "category": "Майки",
                 "gender": "Унисекс",
@@ -296,6 +167,7 @@ class ApparelCatalogParser(BaseParser):
             {
                 "sku_id": "CRF-PRO-001",
                 "product_name": "Craft Pro Hypervent Running Tee",
+                "model_name": "Craft Pro Hypervent Running Tee",
                 "brand": "craft",
                 "category": "Футболки",
                 "gender": "Мужской",
@@ -312,6 +184,7 @@ class ApparelCatalogParser(BaseParser):
             {
                 "sku_id": "SAL-AGL-001",
                 "product_name": "Salomon Agile Warm Long Sleeve",
+                "model_name": "Salomon Agile Warm Long Sleeve",
                 "brand": "salomon",
                 "category": "Лонгсливы",
                 "gender": "Мужской",
@@ -328,6 +201,7 @@ class ApparelCatalogParser(BaseParser):
             {
                 "sku_id": "XB-ENG-001",
                 "product_name": "X-Bionic Energy Accumulator 4.0 Shirt",
+                "model_name": "X-Bionic Energy Accumulator 4.0 Shirt",
                 "brand": "x-bionic",
                 "category": "Термобелье",
                 "gender": "Мужской",
@@ -339,25 +213,12 @@ class ApparelCatalogParser(BaseParser):
                 "technologies": ["3D Bionic Sphere", "ThermoSyphon", "Sweat Traps"],
                 "description": "Премиальное термобелье швейцарской разработки, поддерживающее температуру тела ровно 37°C."
             },
-            {
-                "sku_id": "ODL-ACT-002",
-                "product_name": "Odlo Active Warm Eco Baselayer Set",
-                "brand": "odlo",
-                "category": "Термобелье",
-                "gender": "Унисекс",
-                "price_current": 7990.0,
-                "sizes": ["S", "M", "L", "XL"],
-                "image_urls": ["https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=1200&q=80"],
-                "source_url": "https://lamoda.ru/p/odlo-active-warm-set",
-                "source": "Lamoda Sport",
-                "technologies": ["ZeroScent", "Warm Eco Fabric"],
-                "description": "Комплект термобелья из переработанных эко-материалов с защитой от запаха."
-            },
 
             # 12. Кофты / Мидлееры
             {
                 "sku_id": "ASC-FMT-001",
                 "product_name": "Asics Fujitrail Midlayer Half Zip",
+                "model_name": "Asics Fujitrail Midlayer Half Zip",
                 "brand": "asics",
                 "category": "Кофты / Мидлееры",
                 "gender": "Мужской",
@@ -374,6 +235,7 @@ class ApparelCatalogParser(BaseParser):
             {
                 "sku_id": "SAL-WND-001",
                 "product_name": "Salomon Cross Run Wind Vest",
+                "model_name": "Salomon Cross Run Wind Vest",
                 "brand": "salomon",
                 "category": "Жилеты",
                 "gender": "Мужской",
@@ -390,6 +252,7 @@ class ApparelCatalogParser(BaseParser):
             {
                 "sku_id": "DYN-ALF-001",
                 "product_name": "Dynafit Alpine Wind 2 Jacket",
+                "model_name": "Dynafit Alpine Wind 2 Jacket",
                 "brand": "dynafit",
                 "category": "Ветровки",
                 "gender": "Мужской",
@@ -406,6 +269,7 @@ class ApparelCatalogParser(BaseParser):
             {
                 "sku_id": "GOR-SHK-001",
                 "product_name": "Gore Wear R7 Shakedry Membrane Jacket",
+                "model_name": "Gore Wear R7 Shakedry Membrane Jacket",
                 "brand": "gore wear",
                 "category": "Куртки (Мембраны)",
                 "gender": "Мужской",
@@ -417,25 +281,12 @@ class ApparelCatalogParser(BaseParser):
                 "technologies": ["GORE-TEX SHAKEDRY", "Ultralight Membrane"],
                 "description": "Эталонная мембранная куртка без поверхностной ткани: капли воды просто стряхиваются с поверхности."
             },
-            {
-                "sku_id": "ARC-NOR-002",
-                "product_name": "Arcteryx Norvan LT Hoody GTX",
-                "brand": "arcteryx",
-                "category": "Куртки (Мембраны)",
-                "gender": "Мужской",
-                "price_current": 38990.0,
-                "sizes": ["S", "M", "L", "XL"],
-                "image_urls": ["https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=1200&q=80"],
-                "source_url": "https://brandshop.ru/goods/arcteryx-norvan-lt",
-                "source": "Brandshop",
-                "technologies": ["GORE-TEX Paclite Plus", "C-KNIT Backer"],
-                "description": "Сверхлегкая мембранная горная беговая куртка для сложнейших трейлов и ультрамарафонов."
-            },
 
             # 16. Перчатки
             {
                 "sku_id": "SAL-WPR-001",
                 "product_name": "Salomon Fast Wing Winter Gloves",
+                "model_name": "Salomon Fast Wing Winter Gloves",
                 "brand": "salomon",
                 "category": "Перчатки",
                 "gender": "Унисекс",
@@ -452,6 +303,7 @@ class ApparelCatalogParser(BaseParser):
             {
                 "sku_id": "BUF-ORG-001",
                 "product_name": "Buff Original EcoStretch Neckwear",
+                "model_name": "Buff Original EcoStretch Neckwear",
                 "brand": "buff",
                 "category": "Баффы (Гейтеры)",
                 "gender": "Унисекс",
@@ -468,6 +320,7 @@ class ApparelCatalogParser(BaseParser):
             {
                 "sku_id": "CMP-VIS-001",
                 "product_name": "Compressport Spiderweb Ultralight Visor",
+                "model_name": "Compressport Spiderweb Ultralight Visor",
                 "brand": "compressport",
                 "category": "Кепки / Козырьки",
                 "gender": "Унисекс",
@@ -484,6 +337,7 @@ class ApparelCatalogParser(BaseParser):
             {
                 "sku_id": "BUF-HDB-001",
                 "product_name": "Buff CoolNet UV Wide Headband",
+                "model_name": "Buff CoolNet UV Wide Headband",
                 "brand": "buff",
                 "category": "Повязки",
                 "gender": "Унисекс",
@@ -500,6 +354,7 @@ class ApparelCatalogParser(BaseParser):
             {
                 "sku_id": "CRF-BNI-001",
                 "product_name": "Craft Core Essence Thermal Beanie",
+                "model_name": "Craft Core Essence Thermal Beanie",
                 "brand": "craft",
                 "category": "Шапки",
                 "gender": "Унисекс",
@@ -533,12 +388,15 @@ class ApparelCatalogParser(BaseParser):
                 "sku_id": raw.get("sku_id"),
                 "product_name": p_name,
                 "title": p_name,
+                "model_name": raw.get("model_name") or p_name,
                 "brand": clean_brand,
                 "category": clean_category,
                 "subcategory": clean_category,
                 "gender": clean_gender,
+                "purpose": raw.get("purpose", ["бег", "тренировки"]),
                 "price_current": float(raw.get("price_current", raw.get("price", 0.0))),
                 "price": float(raw.get("price_current", raw.get("price", 0.0))),
+                "currency": "RUB",
                 "sizes": raw.get("sizes", []),
                 "image_urls": img_urls,
                 "image_url": main_img,

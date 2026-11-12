@@ -10,6 +10,7 @@ from app.core.config import settings
 from app.core.database import engine, Base, SessionLocal
 from app.api.v1.router import api_router
 from app.db.seed_data import seed_initial_data_if_empty
+from app.services.scheduler import parser_scheduler
 
 # Configure logging
 logging.basicConfig(
@@ -27,10 +28,15 @@ async def lifespan(app: FastAPI):
     # Auto-seed initial demo dataset if database is fresh
     with SessionLocal() as db:
         await seed_initial_data_if_empty(db)
+
+    # Optional background scheduler start
+    if settings.ENABLE_PARSER_SCHEDULER:
+        parser_scheduler.start()
     
     logger.info(f"{settings.PROJECT_NAME} initialized successfully.")
     yield
     # Shutdown
+    parser_scheduler.stop()
     logger.info("Shutting down...")
 
 app = FastAPI(

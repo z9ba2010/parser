@@ -19,10 +19,10 @@ async def seed_initial_data_if_empty(db: Session):
     supplements_count = db.query(SupplementProduct).count()
     events_count = db.query(SportEvent).count()
 
-    if apparel_count == 0:
-        logger.info("Seeding apparel catalog...")
+    if apparel_count < 20:
+        logger.info("Seeding / updating apparel taxonomy catalog (20 categories)...")
         parser = ApparelCatalogParser()
-        items = await parser.parse(limit=50)
+        items = await parser.parse(limit=100)
         parser.save_items(db, items)
         await parser.close()
 

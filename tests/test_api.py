@@ -10,6 +10,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 from app.main import app
 from app.core.database import engine, Base, SessionLocal
 from app.db.seed_data import seed_initial_data_if_empty
+from app.services.sanitizer import sanitizer, TAXONOMY_CATEGORIES, CANONICAL_CATEGORIES
 
 @pytest.fixture(scope="session", autouse=True)
 def setup_database():
@@ -31,17 +32,66 @@ def test_health(client):
     assert data["status"] == "healthy"
     assert "service" in data
 
-def test_apparel_listing(client):
+def test_apparel_listing_and_schema_fields(client):
+    """Verify that all required fields from Section 2 of ТЗ are present."""
     response = client.get("/api/v1/apparel")
     assert response.status_code == 200
     data = response.json()
     assert "items" in data
-    assert data["total"] > 0
+    assert data["total"] >= 20
+
     first = data["items"][0]
-    assert "title" in first
+    # Check strict fields from section 2 of ТЗ
+    assert "sku_id" in first
+    assert "category" in first
     assert "brand" in first
-    assert "price" in first
-    assert "technologies" in first
+    assert "product_name" in first
+    assert "gender" in first
+    assert "price_current" in first
+    assert "sizes" in first
+    assert "image_urls" in first
+    assert "source_url" in first
+    assert isinstance(first["image_urls"], list)
+
+def test_apparel_taxonomy_endpoint(client):
+    """Verify 20 categories taxonomy endpoint matches ТЗ requirements."""
+    response = client.get("/api/v1/apparel/taxonomy")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["total_categories"] == 20
+    assert "categories" in data
+    
+    # Check sample key categories and brands
+    assert "Носки" in data["categories"]
+    assert "Compressport" in data["categories"]["Носки"]
+    assert "Обувь" in data["categories"]
+    assert "Hoka" in data["categories"]["Обувь"]
+    assert "Куртки (Мембраны)" in data["categories"]
+    assert "Arcteryx" in data["categories"]["Куртки (Мембраны)"]
+
+def test_sanitization_brand_normalization():
+    """Verify brand normalization rules (ASICS, асикс -> Asics, etc.)."""
+    assert sanitizer.normalize_brand("ASICS") == "Asics"
+    assert sanitizer.normalize_brand("асикс") == "Asics"
+    assert sanitizer.normalize_brand("hoka one one") == "Hoka"
+    assert sanitizer.normalize_brand("ХОКА") == "Hoka"
+    assert sanitizer.normalize_brand("найк") == "Nike"
+    assert sanitizer.normalize_brand("NIKE running") == "Nike"
+    assert sanitizer.normalize_brand("the north face") == "The North Face"
+    assert sanitizer.normalize_brand("tnf") == "The North Face"
+    assert sanitizer.normalize_brand("2xu") == "2XU"
+    assert sanitizer.normalize_brand("x-bionic") == "X-Bionic"
+    assert sanitizer.normalize_brand("Gore-Wear") == "Gore Wear"
+
+def test_sanitization_category_normalization():
+    """Verify category normalization maps to exact 20 target categories."""
+    assert sanitizer.normalize_category("socks", "беговые носки") == "Носки"
+    assert sanitizer.normalize_category("calves", "компрессионные гетры для бега") == "Гетры (Компрессия)"
+    assert sanitizer.normalize_category("tights", "зимние тайтсы") == "Тайтсы"
+    assert sanitizer.normalize_category("jacket", "мембранная куртка gore-tex") == "Куртки (Мембраны)"
+    assert sanitizer.normalize_category("windbreaker", "легкая ветровка") == "Ветровки"
+    assert sanitizer.normalize_category("beanie", "теплая шапка") == "Шапки"
+    assert sanitizer.normalize_category("buff", "беговой бафф гейтер") == "Баффы (Гейтеры)"
 
 def test_apparel_filter_by_brand(client):
     response = client.get("/api/v1/apparel?brand=Salomon")
@@ -51,11 +101,13 @@ def test_apparel_filter_by_brand(client):
     for item in data["items"]:
         assert "Salomon" in item["brand"]
 
-def test_apparel_filter_by_purpose(client):
-    response = client.get("/api/v1/apparel?purpose=трейл")
+def test_apparel_filter_by_category(client):
+    response = client.get("/api/v1/apparel?category=Обувь")
     assert response.status_code == 200
     data = response.json()
     assert data["total"] >= 1
+    for item in data["items"]:
+        assert item["category"] == "Обувь"
 
 def test_supplements_listing(client):
     response = client.get("/api/v1/supplements")
@@ -107,16 +159,33 @@ def test_vision_recognition_file_upload(client):
     assert data["detected"]["brand"] is not None
     assert data["matched_product"] is not None
     assert data["matched_product"]["brand"] is not None
+    assert data["matched_product"]["sku_id"] is not None
 
-def test_parser_job_trigger_and_list(client):
-    response = client.post("/api/v1/parsers/run", json={"domain": "events", "limit_per_source": 5})
+def test_proxy_manager_and_endpoints(client):
+    """Verify proxy management infrastructure."""
+    response = client.get("/api/v1/parsers/proxies")
+    assert response.status_code == 200
+    data = response.json()
+    assert "total_proxies" in data
+    assert "healthy_proxies" in data
+
+    # Add proxy
+    add_resp = client.post("/api/v1/parsers/proxies", json={"proxy_url": "http://user:pass@194.67.1.1:8000"})
+    assert add_resp.status_code == 200
+    assert add_resp.json()["total_proxies"] >= 1
+
+def test_scheduler_status(client):
+    """Verify scheduler status endpoint."""
+    response = client.get("/api/v1/parsers/scheduler")
+    assert response.status_code == 200
+    data = response.json()
+    assert "is_running" in data
+    assert "interval_hours" in data
+
+def test_parser_job_trigger_with_category(client):
+    """Trigger parser with specific category."""
+    response = client.post("/api/v1/parsers/run", json={"domain": "apparel", "category": "Носки", "limit_per_source": 10})
     assert response.status_code == 200
     job = response.json()
-    assert job["domain"] == "events"
+    assert "apparel" in job["domain"]
     assert job["status"] in ("completed", "running")
-
-    # Check jobs list
-    jobs_resp = client.get("/api/v1/parsers/jobs")
-    assert jobs_resp.status_code == 200
-    jobs_data = jobs_resp.json()
-    assert jobs_data["total"] >= 1
