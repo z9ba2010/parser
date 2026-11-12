@@ -1,7 +1,7 @@
 import uuid
 import logging
 from datetime import datetime, timezone
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 from sqlalchemy.orm import Session
 
 from app.models.parser_job import ParserJob
@@ -11,14 +11,15 @@ from app.parsers.events_parser import EventsAggregatorParser
 
 logger = logging.getLogger(__name__)
 
-async def run_parser_job(db: Session, domain: str = "all", limit: int = 20) -> ParserJob:
+async def run_parser_job(db: Session, domain: str = "all", limit: int = 50, category: Optional[str] = None) -> ParserJob:
     """
     Executes a parsing job across requested domains, updates ParserJob audit log in database.
     """
     job_id = f"job-{uuid.uuid4().hex[:12]}"
+    job_domain = f"{domain}:{category}" if category else domain
     job = ParserJob(
         job_id=job_id,
-        domain=domain,
+        domain=job_domain,
         status="running",
         items_scanned=0,
         items_added=0,
@@ -39,7 +40,7 @@ async def run_parser_job(db: Session, domain: str = "all", limit: int = 20) -> P
         if domain in ("apparel", "all"):
             apparel_parser = ApparelCatalogParser()
             try:
-                items = await apparel_parser.parse(limit=limit)
+                items = await apparel_parser.parse(limit=limit, target_category=category)
                 res = apparel_parser.save_items(db, items)
                 total_scanned += res["scanned"]
                 total_added += res["added"]

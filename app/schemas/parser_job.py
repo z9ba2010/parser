@@ -1,10 +1,11 @@
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 
 class ParserTriggerRequest(BaseModel):
-    domain: str = "all" # apparel, supplements, events, all
-    limit_per_source: int = 20
+    domain: str = "apparel" # apparel, supplements, events, all
+    category: Optional[str] = None # Optional specific category from the 20 target categories
+    limit_per_source: int = 50
 
 class ParserJobResponse(BaseModel):
     id: int
@@ -24,3 +25,19 @@ class ParserJobResponse(BaseModel):
 class ParserJobListResponse(BaseModel):
     total: int
     items: List[ParserJobResponse]
+
+class ProxyStatusResponse(BaseModel):
+    total_proxies: int
+    healthy_proxies: int
+    failed_proxies: int
+    active_proxies: List[str]
+
+class AddProxyRequest(BaseModel):
+    proxy_url: str
+
+class SchedulerStatusResponse(BaseModel):
+    is_running: bool
+    interval_hours: int
+    last_run_at: Optional[str] = None
+    next_run_at: Optional[str] = None
+    jobs_executed: int
