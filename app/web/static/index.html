@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sport, Supplements & Events Hub</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
+        }
+        .card-hover:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+
+    <!-- Top Header -->
+    <header class="gradient-header text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-rose-500 flex items-center justify-center font-bold text-xl shadow-md">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight">Sport & Events Hub</h1>
+                    <p class="text-xs text-indigo-200">Мультидоменный бэкенд и поисковая система для MaxFunFit</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-3 text-sm">
+                <a href="/docs" target="_blank" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 font-medium transition flex items-center gap-1.5 shadow">
+                    <i class="fa-solid fa-code"></i> Swagger API
+                </a>
+                <a href="/redoc" target="_blank" class="px-3 py-1.5 rounded-lg bg-indigo-700/60 hover:bg-indigo-700 font-medium transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-book"></i> ReDoc
+                </a>
+                <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> API Online v1.0
+                </span>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="max-w-7xl mx-auto px-4 border-t border-indigo-900/50 flex space-x-2 overflow-x-auto text-sm pt-2">
+            <button onclick="switchTab('apparel')" id="tab-apparel" class="px-4 py-2 font-medium border-b-2 border-amber-400 text-white flex items-center gap-2">
+                <i class="fa-solid fa-shoe-prints"></i> Модуль 1: Экипировка и Обувь
+            </button>
+            <button onclick="switchTab('vision')" id="tab-vision" class="px-4 py-2 font-medium border-b-2 border-transparent text-indigo-200 hover:text-white flex items-center gap-2">
+                <i class="fa-solid fa-camera"></i> Модуль 2: Visual Search (AI)
+            </button>
+            <button onclick="switchTab('supplements')" id="tab-supplements" class="px-4 py-2 font-medium border-b-2 border-transparent text-indigo-200 hover:text-white flex items-center gap-2">
+                <i class="fa-solid fa-pills"></i> Модуль 3: Спортивное питание и БАДы
+            </button>
+            <button onclick="switchTab('events')" id="tab-events" class="px-4 py-2 font-medium border-b-2 border-transparent text-indigo-200 hover:text-white flex items-center gap-2">
+                <i class="fa-solid fa-calendar-days"></i> Модуль 4: События РФ & Гео
+            </button>
+            <button onclick="switchTab('parsers')" id="tab-parsers" class="px-4 py-2 font-medium border-b-2 border-transparent text-indigo-200 hover:text-white flex items-center gap-2">
+                <i class="fa-solid fa-robot"></i> Парсеры и Сбор данных
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full">
+
+        <!-- TAB 1: APPAREL & FOOTWEAR -->
+        <section id="section-apparel" class="space-y-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                <h2 class="text-lg font-bold text-slate-800 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-filter text-indigo-600"></i> Фильтры каталога экипировки
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Поиск</label>
+                        <input id="apparel-search" type="text" placeholder="Модель, бренд или технология..." class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Бренд</label>
+                        <select id="apparel-brand" class="w-full px-3 py-2 border rounded-lg bg-white outline-none">
+                            <option value="">Все бренды</option>
+                            <option value="Nike">Nike</option>
+                            <option value="Adidas">Adidas</option>
+                            <option value="Hoka">Hoka</option>
+                            <option value="Salomon">Salomon</option>
+                            <option value="Asics">Asics</option>
+                            <option value="Puma">Puma</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Назначение</label>
+                        <select id="apparel-purpose" class="w-full px-3 py-2 border rounded-lg bg-white outline-none">
+                            <option value="">Все назначения</option>
+                            <option value="бег">Бег / Шоссе</option>
+                            <option value="трейл">Трейлраннинг</option>
+                            <option value="кроссфит">Кроссфит / Зал</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button onclick="loadApparel()" class="w-full px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition shadow flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-magnifying-glass"></i> Применить
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="apparel-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Loaded dynamically -->
+            </div>
+        </section>
+
+        <!-- TAB 2: VISUAL SEARCH (AI) -->
+        <section id="section-vision" class="space-y-6 hidden">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <div class="max-w-2xl mx-auto text-center space-y-3">
+                    <div class="w-16 h-16 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto text-2xl shadow-inner">
+                        <i class="fa-solid fa-camera-retro"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-slate-800">Распознавание экипировки по фотографии</h2>
+                    <p class="text-sm text-slate-500">
+                        Сфотографируйте кроссовок или выберите изображение. Нейросеть (Gemini Vision) определит бренд, модель, цветовую гамму, технологии и выдаст актуальные предложения из базы данных.
+                    </p>
+
+                    <!-- Dropzone -->
+                    <div class="mt-4 border-2 border-dashed border-indigo-200 rounded-2xl p-8 hover:border-indigo-500 transition cursor-pointer bg-slate-50 relative" id="dropzone">
+                        <input type="file" id="vision-file-input" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleImageSelected(event)">
+                        <div id="dropzone-prompt" class="space-y-2">
+                            <i class="fa-solid fa-cloud-arrow-up text-4xl text-indigo-400"></i>
+                            <p class="font-medium text-slate-700">Нажмите для выбора фото или перетащите файл сюда</p>
+                            <p class="text-xs text-slate-400">Поддерживаются JPEG, PNG, WebP с камеры телефона</p>
+                        </div>
+                        <div id="image-preview-container" class="hidden">
+                            <img id="image-preview" src="" alt="Предпросмотр" class="max-h-64 mx-auto rounded-xl shadow-md">
+                            <p id="image-filename" class="text-xs font-semibold text-slate-600 mt-2"></p>
+                        </div>
+                    </div>
+
+                    <!-- Quick Sample Buttons for Instant Testing -->
+                    <div class="pt-2">
+                        <p class="text-xs font-semibold text-slate-500 mb-2">Или выберите тестовый снимок для мгновенной проверки:</p>
+                        <div class="flex flex-wrap justify-center gap-2 text-xs">
+                            <button onclick="testQuickImage('Nike Pegasus 40', 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80')" class="px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 border text-slate-700">
+                                👟 Nike Pegasus 40
+                            </button>
+                            <button onclick="testQuickImage('Hoka Clifton 9', 'https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?auto=format&fit=crop&w=600&q=80')" class="px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 border text-slate-700">
+                                👟 Hoka Clifton 9
+                            </button>
+                            <button onclick="testQuickImage('Salomon Speedcross 6', 'https://images.unsplash.com/photo-1551107696-a4b0c5a0d9a2?auto=format&fit=crop&w=600&q=80')" class="px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 border text-slate-700">
+                                👟 Salomon Speedcross
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="pt-3">
+                        <button id="btn-recognize" onclick="uploadAndRecognize()" class="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-800 text-white font-medium rounded-xl shadow hover:from-indigo-700 hover:to-indigo-900 transition flex items-center justify-center gap-2 mx-auto disabled:opacity-50">
+                            <i class="fa-solid fa-sparkles"></i> Распознать через AI Vision
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recognition Results Box -->
+            <div id="vision-results" class="hidden space-y-6">
+                <!-- Dynamically generated result -->
+            </div>
+        </section>
+
+        <!-- TAB 3: SUPPLEMENTS -->
+        <section id="section-supplements" class="space-y-6 hidden">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                <h2 class="text-lg font-bold text-slate-800 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-filter text-emerald-600"></i> Каталог спортивного питания и БАДов
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Поиск</label>
+                        <input id="supp-search" type="text" placeholder="Протеин, креатин, BCAA..." class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-400 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Цель приема</label>
+                        <select id="supp-goal" class="w-full px-3 py-2 border rounded-lg bg-white outline-none">
+                            <option value="">Все цели</option>
+                            <option value="выносливость">Выносливость (бег, триатлон)</option>
+                            <option value="набор массы">Набор мышечной массы</option>
+                            <option value="сушка">Сушка / Рельеф</option>
+                            <option value="восстановление">Быстрое восстановление</option>
+                            <option value="суставы">Суставы и связки</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Форма выпуска</label>
+                        <select id="supp-form" class="w-full px-3 py-2 border rounded-lg bg-white outline-none">
+                            <option value="">Все формы</option>
+                            <option value="порошок">Порошок</option>
+                            <option value="капсулы">Капсулы</option>
+                            <option value="жидкость">Жидкость / Гели</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button onclick="loadSupplements()" class="w-full px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition shadow flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-magnifying-glass"></i> Найти
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="supplements-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Loaded dynamically -->
+            </div>
+        </section>
+
+        <!-- TAB 4: SPORTS EVENTS & GEO -->
+        <section id="section-events" class="space-y-6 hidden">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                <h2 class="text-lg font-bold text-slate-800 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-location-dot text-rose-600"></i> Единый календарь спортивных событий по всей России
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Дисциплина</label>
+                        <select id="event-discipline" class="w-full px-3 py-2 border rounded-lg bg-white outline-none">
+                            <option value="">Все дисциплины</option>
+                            <option value="бег">Бег / Марафоны</option>
+                            <option value="трейл">Трейлраннинг</option>
+                            <option value="триатлон">Триатлон</option>
+                            <option value="гонки_с_препятствиями">Гонки с препятствиями (OCR)</option>
+                            <option value="велоспорт">Велоспорт</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Город / Регион</label>
+                        <input id="event-city" type="text" placeholder="Москва, Сочи, Суздаль..." class="w-full px-3 py-2 border rounded-lg outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Гео-радиус от Москвы</label>
+                        <select id="event-radius" class="w-full px-3 py-2 border rounded-lg bg-white outline-none">
+                            <option value="">Вся Россия (без ограничения)</option>
+                            <option value="150">В радиусе 150 км</option>
+                            <option value="300">В радиусе 300 км</option>
+                            <option value="600">В радиусе 600 км</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button onclick="loadEvents()" class="w-full px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-medium transition shadow flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-route"></i> Найти старты
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="events-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Loaded dynamically -->
+            </div>
+        </section>
+
+        <!-- TAB 5: PARSERS RUNNER -->
+        <section id="section-parsers" class="space-y-6 hidden">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h2 class="text-lg font-bold text-slate-800 mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-network-wired text-indigo-600"></i> Управление мультидоменным парсингом
+                </h2>
+                <p class="text-sm text-slate-500 mb-6">
+                    Автоматический сбор данных с маркетплейсов, спортивных сетей (RunLab, Спортмастер, Lamoda, 5lb) и платформ регистрации стартов (RussiaRunning, Golden Ring, Ironstar, Лига Героев).
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <button onclick="triggerParser('apparel')" class="p-4 rounded-xl border-2 border-slate-200 hover:border-indigo-500 hover:bg-indigo-50/30 transition text-left space-y-2">
+                        <div class="text-indigo-600 font-bold flex items-center gap-2">
+                            <i class="fa-solid fa-shoe-prints"></i> Сбор экипировки
+                        </div>
+                        <p class="text-xs text-slate-500">Парсинг обуви, одежды, размерных сеток и цен</p>
+                    </button>
+                    <button onclick="triggerParser('supplements')" class="p-4 rounded-xl border-2 border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/30 transition text-left space-y-2">
+                        <div class="text-emerald-600 font-bold flex items-center gap-2">
+                            <i class="fa-solid fa-pills"></i> Сбор БАДов
+                        </div>
+                        <p class="text-xs text-slate-500">Парсинг спортивного питания, дозировок и состава</p>
+                    </button>
+                    <button onclick="triggerParser('events')" class="p-4 rounded-xl border-2 border-slate-200 hover:border-rose-500 hover:bg-rose-50/30 transition text-left space-y-2">
+                        <div class="text-rose-600 font-bold flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-check"></i> Сбор событий РФ
+                        </div>
+                        <p class="text-xs text-slate-500">Агрегация забегов, трейлов, триатлона и OCR</p>
+                    </button>
+                    <button onclick="triggerParser('all')" class="p-4 rounded-xl border-2 border-amber-300 bg-amber-50/50 hover:bg-amber-100/50 transition text-left space-y-2">
+                        <div class="text-amber-700 font-bold flex items-center gap-2">
+                            <i class="fa-solid fa-arrows-rotate"></i> Полная синхронизация
+                        </div>
+                        <p class="text-xs text-slate-600">Запуск всех модулей одновременно</p>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Jobs History Table -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-slate-800">Журнал выполнения парсеров (Audit Log)</h3>
+                    <button onclick="loadParserJobs()" class="text-xs text-indigo-600 hover:underline font-semibold flex items-center gap-1">
+                        <i class="fa-solid fa-rotate-right"></i> Обновить статус
+                    </button>
+                </div>
+                <div class="overflow-x-auto text-sm">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="border-b text-xs text-slate-500 font-semibold uppercase">
+                                <th class="pb-3">Job ID</th>
+                                <th class="pb-3">Домен</th>
+                                <th class="pb-3">Статус</th>
+                                <th class="pb-3">Просканировано</th>
+                                <th class="pb-3">Добавлено / Обновлено</th>
+                                <th class="pb-3">Время старта</th>
+                            </tr>
+                        </thead>
+                        <tbody id="jobs-table-body">
+                            <!-- Loaded dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 text-center text-xs">
+        <p>Sport, Supplements & Events Hub API • Разработано для AntiGravity & MaxFunFit Integration</p>
+    </footer>
+
+    <!-- App JavaScript Logic -->
+    <script>
+        let currentTab = 'apparel';
+        let selectedFile = null;
+
+        function switchTab(tab) {
+            currentTab = tab;
+            ['apparel', 'vision', 'supplements', 'events', 'parsers'].forEach(t => {
+                const sec = document.getElementById(`section-${t}`);
+                const btn = document.getElementById(`tab-${t}`);
+                if (t === tab) {
+                    sec.classList.remove('hidden');
+                    btn.classList.add('border-amber-400', 'text-white');
+                    btn.classList.remove('border-transparent', 'text-indigo-200');
+                } else {
+                    sec.classList.add('hidden');
+                    btn.classList.remove('border-amber-400', 'text-white');
+                    btn.classList.add('border-transparent', 'text-indigo-200');
+                }
+            });
+
+            if (tab === 'apparel') loadApparel();
+            if (tab === 'supplements') loadSupplements();
+            if (tab === 'events') loadEvents();
+            if (tab === 'parsers') loadParserJobs();
+        }
+
+        // LOAD APPAREL
+        async function loadApparel() {
+            const search = document.getElementById('apparel-search').value;
+            const brand = document.getElementById('apparel-brand').value;
+            const purpose = document.getElementById('apparel-purpose').value;
+
+            const params = new URLSearchParams();
+            if (search) params.append('search', search);
+            if (brand) params.append('brand', brand);
+            if (purpose) params.append('purpose', purpose);
+
+            const grid = document.getElementById('apparel-grid');
+            grid.innerHTML = '<div class="col-span-3 text-center py-12 text-slate-400"><i class="fa-solid fa-spinner fa-spin text-2xl"></i> Загрузка...</div>';
+
+            try {
+                const res = await fetch(`/api/v1/apparel?${params.toString()}`);
+                const data = await res.json();
+                
+                if (data.items.length === 0) {
+                    grid.innerHTML = '<div class="col-span-3 text-center py-12 text-slate-400">Товары не найдены</div>';
+                    return;
+                }
+
+                grid.innerHTML = data.items.map(item => `
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden card-hover transition duration-200 flex flex-col">
+                        <div class="h-52 bg-slate-100 overflow-hidden relative">
+                            <img src="${item.image_url}" alt="${item.title}" class="w-full h-full object-cover">
+                            <span class="absolute top-3 left-3 bg-slate-900/80 backdrop-blur text-white text-xs px-2.5 py-1 rounded-full font-semibold uppercase tracking-wider">${item.brand}</span>
+                            <span class="absolute top-3 right-3 bg-emerald-600 text-white text-xs px-2.5 py-1 rounded-full font-bold">${item.price.toLocaleString()} ₽</span>
+                        </div>
+                        <div class="p-5 flex-1 flex flex-col justify-between space-y-3">
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-base leading-snug">${item.title}</h3>
+                                <p class="text-xs text-slate-500 mt-1 line-clamp-2">${item.description || ''}</p>
+                            </div>
+                            <div>
+                                <div class="flex flex-wrap gap-1 mb-3">
+                                    ${(item.technologies || []).slice(0, 3).map(tech => `<span class="bg-indigo-50 text-indigo-700 text-[10px] font-semibold px-2 py-0.5 rounded-md">${tech}</span>`).join('')}
+                                </div>
+                                <div class="flex items-center justify-between text-xs text-slate-400 border-t pt-3">
+                                    <span>Источник: <strong class="text-slate-600">${item.source}</strong></span>
+                                    <a href="${item.source_url}" target="_blank" class="text-indigo-600 hover:text-indigo-800 font-semibold flex items-center gap-1">
+                                        Купить <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                grid.innerHTML = `<div class="col-span-3 text-center py-12 text-rose-500">Ошибка загрузки: ${err}</div>`;
+            }
+        }
+
+        // LOAD SUPPLEMENTS
+        async function loadSupplements() {
+            const search = document.getElementById('supp-search').value;
+            const goal = document.getElementById('supp-goal').value;
+            const form = document.getElementById('supp-form').value;
+
+            const params = new URLSearchParams();
+            if (search) params.append('search', search);
+            if (goal) params.append('target_goal', goal);
+            if (form) params.append('form', form);
+
+            const grid = document.getElementById('supplements-grid');
+            grid.innerHTML = '<div class="col-span-3 text-center py-12 text-slate-400"><i class="fa-solid fa-spinner fa-spin text-2xl"></i> Загрузка...</div>';
+
+            try {
+                const res = await fetch(`/api/v1/supplements?${params.toString()}`);
+                const data = await res.json();
+
+                if (data.items.length === 0) {
+                    grid.innerHTML = '<div class="col-span-3 text-center py-12 text-slate-400">Добавки не найдены</div>';
+                    return;
+                }
+
+                grid.innerHTML = data.items.map(item => `
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden card-hover transition duration-200 flex flex-col">
+                        <div class="h-48 bg-slate-100 overflow-hidden relative">
+                            <img src="${item.image_url}" alt="${item.title}" class="w-full h-full object-cover">
+                            <span class="absolute top-3 left-3 bg-emerald-700/80 backdrop-blur text-white text-xs px-2.5 py-1 rounded-full font-semibold uppercase">${item.brand}</span>
+                            <span class="absolute top-3 right-3 bg-slate-900 text-white text-xs px-2.5 py-1 rounded-full font-bold">${item.price.toLocaleString()} ₽</span>
+                        </div>
+                        <div class="p-5 flex-1 flex flex-col justify-between space-y-3">
+                            <div>
+                                <span class="text-[11px] font-bold uppercase text-emerald-600 tracking-wider">${item.category} • ${item.form}</span>
+                                <h3 class="font-bold text-slate-800 text-base leading-snug mt-1">${item.title}</h3>
+                                <p class="text-xs text-slate-500 mt-1 line-clamp-2">${item.dosage || ''}</p>
+                            </div>
+                            <div>
+                                <div class="flex flex-wrap gap-1 mb-3">
+                                    ${(item.target_goals || []).map(g => `<span class="bg-emerald-50 text-emerald-800 text-[10px] font-semibold px-2 py-0.5 rounded-md">${g}</span>`).join('')}
+                                </div>
+                                <div class="flex items-center justify-between text-xs text-slate-400 border-t pt-3">
+                                    <span>⭐ ${item.rating} (${item.reviews_count})</span>
+                                    <a href="${item.source_url}" target="_blank" class="text-emerald-600 hover:text-emerald-800 font-semibold flex items-center gap-1">
+                                        В магазин <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                grid.innerHTML = `<div class="col-span-3 text-center py-12 text-rose-500">Ошибка: ${err}</div>`;
+            }
+        }
+
+        // LOAD EVENTS
+        async function loadEvents() {
+            const discipline = document.getElementById('event-discipline').value;
+            const city = document.getElementById('event-city').value;
+            const radius = document.getElementById('event-radius').value;
+
+            const params = new URLSearchParams();
+            if (discipline) params.append('discipline', discipline);
+            if (city) params.append('city', city);
+            
+            // If radius chosen, reference Moscow coordinates (55.7558, 37.6173)
+            if (radius) {
+                params.append('lat', '55.7558');
+                params.append('lon', '37.6173');
+                params.append('radius_km', radius);
+            }
+
+            const grid = document.getElementById('events-grid');
+            grid.innerHTML = '<div class="col-span-2 text-center py-12 text-slate-400"><i class="fa-solid fa-spinner fa-spin text-2xl"></i> Загрузка событий...</div>';
+
+            try {
+                const res = await fetch(`/api/v1/events?${params.toString()}`);
+                const data = await res.json();
+
+                if (data.items.length === 0) {
+                    grid.innerHTML = '<div class="col-span-2 text-center py-12 text-slate-400">События не найдены</div>';
+                    return;
+                }
+
+                grid.innerHTML = data.items.map(event => `
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden card-hover transition duration-200 flex flex-col md:flex-row">
+                        <div class="md:w-5/12 h-48 md:h-auto bg-slate-100 relative">
+                            <img src="${event.cover_image_url || 'https://images.unsplash.com/photo-1452626038306-9aae5e071dd3?auto=format&fit=crop&w=600&q=80'}" class="w-full h-full object-cover">
+                            <span class="absolute top-3 left-3 bg-rose-600 text-white text-xs px-2.5 py-1 rounded-full font-bold uppercase tracking-wider">${event.discipline}</span>
+                            ${event.distance_km ? `<span class="absolute bottom-3 left-3 bg-slate-900/80 backdrop-blur text-white text-[11px] px-2 py-0.5 rounded-md font-medium"><i class="fa-solid fa-location-arrow"></i> ${event.distance_km} км</span>` : ''}
+                        </div>
+                        <div class="p-5 md:w-7/12 flex flex-col justify-between space-y-3">
+                            <div>
+                                <div class="flex items-center gap-2 text-xs font-semibold text-rose-600 mb-1">
+                                    <i class="fa-solid fa-calendar"></i> ${new Date(event.start_date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })}
+                                </div>
+                                <h3 class="font-bold text-slate-800 text-lg leading-tight">${event.title}</h3>
+                                <p class="text-xs text-slate-500 mt-1"><i class="fa-solid fa-map-pin text-slate-400"></i> ${event.city}, ${event.region}</p>
+                                <p class="text-xs text-slate-600 mt-2 line-clamp-2">${event.description || ''}</p>
+                            </div>
+                            <div>
+                                <div class="flex flex-wrap gap-1 mb-3">
+                                    ${(event.distances || []).map(d => `<span class="bg-rose-50 text-rose-700 text-[10px] font-bold px-2 py-0.5 rounded-md">${d}</span>`).join('')}
+                                </div>
+                                <div class="flex items-center justify-between text-xs border-t pt-3">
+                                    <span class="text-slate-400">Орг: <strong class="text-slate-600">${event.organizer || '—'}</strong></span>
+                                    <a href="${event.registration_link}" target="_blank" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-medium rounded-lg transition shadow flex items-center gap-1.5">
+                                        Регистрация <i class="fa-solid fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                grid.innerHTML = `<div class="col-span-2 text-center py-12 text-rose-500">Ошибка: ${err}</div>`;
+            }
+        }
+
+        // LOAD PARSER JOBS
+        async function loadParserJobs() {
+            const tbody = document.getElementById('jobs-table-body');
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-slate-400"><i class="fa-solid fa-spinner fa-spin"></i></td></tr>';
+
+            try {
+                const res = await fetch('/api/v1/parsers/jobs');
+                const data = await res.json();
+
+                if (data.items.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-slate-400">Задачи еще не запускались</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = data.items.map(job => `
+                    <tr class="border-b hover:bg-slate-50">
+                        <td class="py-3 font-mono text-xs font-semibold text-slate-700">${job.job_id}</td>
+                        <td class="py-3 font-medium capitalize">${job.domain}</td>
+                        <td class="py-3">
+                            <span class="px-2 py-0.5 rounded-full text-xs font-semibold ${job.status === 'completed' ? 'bg-emerald-100 text-emerald-700' : job.status === 'running' ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700'}">
+                                ${job.status}
+                            </span>
+                        </td>
+                        <td class="py-3">${job.items_scanned}</td>
+                        <td class="py-3 font-semibold text-indigo-600">+${job.items_added} / ~${job.items_updated}</td>
+                        <td class="py-3 text-xs text-slate-500">${job.started_at ? new Date(job.started_at).toLocaleTimeString() : '—'}</td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-rose-500">Ошибка: ${err}</td></tr>`;
+            }
+        }
+
+        async function triggerParser(domain) {
+            try {
+                const res = await fetch('/api/v1/parsers/run', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ domain: domain, limit_per_source: 20 })
+                });
+                const job = await res.json();
+                alert(`Задача ${job.job_id} (${domain}) успешно запущена и завершена! Добавлено: ${job.items_added}, Обновлено: ${job.items_updated}`);
+                loadParserJobs();
+            } catch (err) {
+                alert(`Ошибка запуска: ${err}`);
+            }
+        }
+
+        // VISUAL SEARCH INTERACTION
+        function handleImageSelected(event) {
+            const file = event.target.files[0];
+            if (file) {
+                selectedFile = file;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('image-preview').src = e.target.result;
+                    document.getElementById('image-filename').textContent = file.name;
+                    document.getElementById('dropzone-prompt').classList.add('hidden');
+                    document.getElementById('image-preview-container').classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        async function testQuickImage(title, url) {
+            const btn = document.getElementById('btn-recognize');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Анализ через AI Vision...';
+
+            const resultsBox = document.getElementById('vision-results');
+            resultsBox.classList.remove('hidden');
+            resultsBox.innerHTML = '<div class="text-center py-12"><i class="fa-solid fa-spinner fa-spin text-3xl text-indigo-600"></i><p class="text-sm font-semibold text-slate-600 mt-2">Нейросеть распознает бренд, модель и подбирает цены...</p></div>';
+
+            try {
+                const res = await fetch('/api/v1/vision/recognize-url', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ image_url: url })
+                });
+                const data = await res.json();
+                renderVisionResults(data, url);
+            } catch (err) {
+                resultsBox.innerHTML = `<div class="p-6 bg-rose-50 text-rose-700 rounded-xl">Ошибка: ${err}</div>`;
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-sparkles"></i> Распознать через AI Vision';
+            }
+        }
+
+        async function uploadAndRecognize() {
+            if (!selectedFile) {
+                alert('Пожалуйста, выберите файл изображения или воспользуйтесь тестовой кнопкой.');
+                return;
+            }
+
+            const btn = document.getElementById('btn-recognize');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Анализ снимка...';
+
+            const resultsBox = document.getElementById('vision-results');
+            resultsBox.classList.remove('hidden');
+            resultsBox.innerHTML = '<div class="text-center py-12"><i class="fa-solid fa-spinner fa-spin text-3xl text-indigo-600"></i><p class="text-sm font-semibold text-slate-600 mt-2">Компьютерное зрение анализирует фотографию...</p></div>';
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+
+            try {
+                const res = await fetch('/api/v1/vision/recognize', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                renderVisionResults(data, document.getElementById('image-preview').src);
+            } catch (err) {
+                resultsBox.innerHTML = `<div class="p-6 bg-rose-50 text-rose-700 rounded-xl">Ошибка распознавания: ${err}</div>`;
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-sparkles"></i> Распознать через AI Vision';
+            }
+        }
+
+        function renderVisionResults(data, imgSrc) {
+            const resultsBox = document.getElementById('vision-results');
+            const det = data.detected;
+            const matched = data.matched_product;
+
+            resultsBox.innerHTML = `
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-6">
+                    <div class="flex flex-wrap items-center justify-between gap-4 border-b pb-4">
+                        <div class="flex items-center gap-3">
+                            <span class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-lg">
+                                <i class="fa-solid fa-check"></i>
+                            </span>
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-900">${det.brand || ''} ${det.model_name || 'Распознанный товар'}</h3>
+                                <p class="text-xs text-slate-500">${data.recognition_engine} • Уверенность: ${(det.confidence_score * 100).toFixed(0)}%</p>
+                            </div>
+                        </div>
+                        <span class="px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-full">
+                            Товар найден в каталоге
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="h-64 rounded-xl overflow-hidden bg-slate-100">
+                            <img src="${imgSrc}" class="w-full h-full object-cover">
+                        </div>
+                        <div class="md:col-span-2 space-y-4">
+                            <div>
+                                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Характерные черты (Computer Vision):</h4>
+                                <ul class="list-disc list-inside text-sm text-slate-700 mt-1 space-y-1">
+                                    ${(det.visual_traits || []).map(t => `<li>${t}</li>`).join('')}
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Расцветка:</h4>
+                                <p class="text-sm font-medium text-slate-800">${det.colorway || 'Стандартная'}</p>
+                            </div>
+                            ${matched ? `
+                                <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-bold text-slate-900">${matched.title}</span>
+                                        <span class="text-lg font-bold text-emerald-600">${matched.price.toLocaleString()} ₽</span>
+                                    </div>
+                                    <p class="text-xs text-slate-500">${matched.description || ''}</p>
+                                    <div class="flex justify-between items-center pt-2 text-xs">
+                                        <span class="text-slate-400">Магазин: <strong class="text-slate-700">${matched.source}</strong></span>
+                                        <a href="${matched.source_url}" target="_blank" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold transition">
+                                            Перейти к покупке <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Init on load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadApparel();
+        });
+    </script>
+</body>
+</html>
